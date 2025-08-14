@@ -1,6 +1,6 @@
 [project]
 name = "agentdiff-coordination"
-version = "0.1.0"
+version = "0.1.1"
 description = "Lightweight coordination library for AI agents to prevent concurrency issues"
 readme = "README.md"
 authors = [
@@ -23,7 +23,8 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: System :: Distributed Computing"
+    "Topic :: System :: Distributed Computing",
+    "Typing :: Typed"
 ]
 
 [project.optional-dependencies]

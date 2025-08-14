@@ -117,12 +117,60 @@ def start_summary(event_data):
 research_agent()  # Everything else flows automatically
 ```
 
+## Scope & Guarantees
+
+**Single-Process Coordination**
+
+- Thread-safe coordination within a single Python process.
+- Resource locks prevent race conditions between agents in the same process.
+- Event-driven workflow orchestration between functions.
+- Optional Redis persistence for event storage and monitoring.
+
+**Consistency Model:**
+
+- **Locks**: Cooperative threading locks with optional timeout.
+- **Events**: Best-effort delivery within process, optional Redis persistence.
+- **Ordering**: Event handlers execute in registration order.
+- **Failure**: Agent failures emit error events, no automatic retries.
+
+**When to Use:**
+
+- Single-process agent workflows.
+- Development and prototyping of multi-agent systems.
+- Thread-safe coordination without external infrastructure.
+- Preventing API rate limits and resource conflicts.
+
+**When NOT to Use:**
+
+- **Distributed systems** requiring cross-pod/cross-machine coordination.
+- **Mission-critical workflows** needing guaranteed delivery.
+- **Long-running workflows** spanning hours/days (use Temporal, Prefect).
+- **Strict consistency** requirements (use proper distributed locks).
+
+**Redis Mode Limitations:**
+
+- Persistence for monitoring only, not distributed coordination.
+- No cross-process lock sharing.
+- No guaranteed event delivery across process restarts.
+
+**Security Considerations:**
+
+- Event payloads are not validated - implement size limits and schema validation as needed.
+- Resource locks are cooperative - not suitable for untrusted environments.
+- Redis persistence stores events in plain text.
+
 ## Installation & Requirements
 
 **Python Support**: 3.9+ (tested on 3.9, 3.10, 3.11, 3.12)
 
 ```bash
 pip install agentdiff-coordination
+```
+
+**Quick Start:**
+
+```python
+from agentdiff_coordination import coordinate, when, emit
 ```
 
 ## Documentation
