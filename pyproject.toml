@@ -1,17 +1,48 @@
 [project]
 name = "agentdiff-coordination"
 version = "0.1.0"
-description = "Add your description here"
+description = "Lightweight coordination primitives for AI agents - prevent race conditions and concurrency bugs"
 readme = "README.md"
 authors = [
-    { name = "sifar", email = "mayank@mayanky.com" }
+    { name = "AgentDiff Team", email = "hello@agentdiff.com" }
 ]
-requires-python = ">=3.13"
-dependencies = []
+requires-python = ">=3.9"
+dependencies = [
+    "wrapt>=1.16.0",
+]
+license = "MIT"
+keywords = ["ai", "agents", "coordination", "concurrency", "race-conditions", "langchain", "crewai", "langgraph"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10", 
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Distributed Computing"
+]
 
-[project.scripts]
-agentdiff-coordination = "agentdiff_coordination:main"
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.21.0",
+    "anthropic>=0.64.0",
+    "crewai>=0.5.0",
+    "openai>=1.99.9",
+    "python-dotenv>=1.1.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/agentdiff/agentdiff-coordination"
+Repository = "https://github.com/agentdiff/agentdiff-coordination"
+Issues = "https://github.com/agentdiff/agentdiff-coordination/issues"
+Documentation = "https://github.com/agentdiff/agentdiff-coordination#readme"
 
 [build-system]
-requires = ["uv_build>=0.8.3,<0.9.0"]
-build-backend = "uv_build"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+

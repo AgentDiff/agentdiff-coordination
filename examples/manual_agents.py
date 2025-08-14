@@ -1,0 +1,246 @@
+#!/usr/bin/env python3
+"""
+Manual Multi-LLM Agent Demo (WITHOUT AgentDiff)
+
+This shows what happens when you run the same workflow manually
+without AgentDiff coordination - no event system, no resource locks.
+"""
+
+import os
+import time
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Check for required API keys
+missing_keys = []
+if not os.getenv("OPENAI_API_KEY"):
+    missing_keys.append("OPENAI_API_KEY")
+if not os.getenv("ANTHROPIC_API_KEY"):
+    missing_keys.append("ANTHROPIC_API_KEY")
+
+if missing_keys:
+    print("Missing required API keys:")
+    for key in missing_keys:
+        print(f"   export {key}=your_key_here")
+    exit(1)
+
+# Import LLM clients
+try:
+    import openai
+    import anthropic
+
+    openai_client = openai.OpenAI()
+    anthropic_client = anthropic.Anthropic()
+    print("LLM clients initialized")
+except ImportError as e:
+    print(f"Missing dependencies: {e}")
+    exit(1)
+
+print("Manual Multi-LLM Agent Demo (WITHOUT AgentDiff)")
+print("No coordination, no event system, no resource locks")
+print("=" * 60)
+
+# Global state for manual workflow
+workflow_state = {
+    "topic": None,
+    "research": None,
+    "fact_check": None,
+    "summary": None,
+    "final_report": None,
+}
+
+
+def manual_research_agent(topic: str):
+    """Research agent - NO AgentDiff decoration"""
+    print(f"Research Agent: Investigating '{topic}'")
+    
+    try:
+        start_time = time.time()
+        response = openai_client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a thorough research assistant. Provide detailed, factual research."
+                },
+                {
+                    "role": "user", 
+                    "content": f"Research this topic thoroughly: {topic}"
+                }
+            ],
+            max_tokens=500,
+            temperature=0.3,
+        )
+        
+        duration = time.time() - start_time
+        research_result = response.choices[0].message.content
+        workflow_state["research"] = research_result
+        
+        print(f"Research completed ({response.usage.total_tokens} tokens, {duration:.1f}s)")
+        return research_result
+        
+    except Exception as e:
+        print(f"Research failed: {e}")
+        raise
+
+
+def manual_fact_checker_agent(research_data: str):
+    """Fact-checking agent - NO AgentDiff decoration"""
+    print("Fact-Checker Agent: Verifying research accuracy")
+    
+    try:
+        start_time = time.time()
+        response = anthropic_client.messages.create(
+            model="claude-opus-4-1-20250805",
+            max_tokens=1024,
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"Fact-check this research for accuracy and identify any potential issues:\n\n{research_data}",
+                }
+            ],
+        )
+        
+        duration = time.time() - start_time
+        fact_check_result = response.content[0].text
+        workflow_state["fact_check"] = fact_check_result
+        
+        print(f"Fact-check completed ({response.usage.input_tokens}→{response.usage.output_tokens} tokens, {duration:.1f}s)")
+        return fact_check_result
+        
+    except Exception as e:
+        print(f"Fact-check failed: {e}")
+        raise
+
+
+def manual_summary_agent(research: str, fact_check: str):
+    """Summary agent - NO AgentDiff decoration"""
+    print("Summary Agent: Creating final summary")
+    
+    try:
+        start_time = time.time()
+        response = openai_client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "Create clear, concise summaries combining research with fact-checking insights."
+                },
+                {
+                    "role": "user",
+                    "content": f"Create a summary combining this research:\n{research}\n\nWith these fact-checking notes:\n{fact_check}"
+                }
+            ],
+            max_tokens=300,
+            temperature=0.5,
+        )
+        
+        duration = time.time() - start_time
+        summary_result = response.choices[0].message.content
+        workflow_state["summary"] = summary_result
+        
+        print(f"Summary completed ({response.usage.total_tokens} tokens, {duration:.1f}s)")
+        return summary_result
+        
+    except Exception as e:
+        print(f"Summary failed: {e}")
+        raise
+
+
+def manual_editor_agent(workflow_data: dict):
+    """Editor agent - NO AgentDiff decoration"""
+    print("Editor Agent: Compiling final report")
+    
+    start_time = time.time()
+    final_report = f"""
+# Research Report: {workflow_data['topic']}
+
+## Research Findings
+{workflow_data['research']}
+
+## Fact-Check Review  
+{workflow_data['fact_check']}
+
+## Executive Summary
+{workflow_data['summary']}
+
+---
+*Report generated by manually coordinated agents*
+*Research: GPT-4 | Fact-Check: Claude-3 | Summary: GPT-3.5-turbo*
+"""
+    
+    duration = time.time() - start_time
+    workflow_state["final_report"] = final_report
+    
+    print(f"Final report completed ({len(final_report)} chars, {duration:.3f}s)")
+    return final_report
+
+
+def run_manual_workflow(topic: str):
+    """Run the complete workflow MANUALLY without AgentDiff"""
+    print(f"\nStarting Manual Workflow (NO coordination)")
+    print(f"Topic: {topic}")
+    print(f"Manual flow: Research → Fact-Check → Summary → Editor")
+    print(f"No resource locks, no events, no coordination")
+    
+    workflow_state["topic"] = topic
+    
+    try:
+        print("\n" + "="*50)
+        print("MANUAL EXECUTION - Step by step")
+        print("="*50)
+        
+        # Step 1: Research (manual call)
+        print("\n1. Calling research agent manually...")
+        research_result = manual_research_agent(topic)
+        
+        # Step 2: Fact-check (manual call)  
+        print("\n2. Calling fact-checker agent manually...")
+        fact_check_result = manual_fact_checker_agent(research_result)
+        
+        # Step 3: Summary (manual call)
+        print("\n3. Calling summary agent manually...")
+        summary_result = manual_summary_agent(research_result, fact_check_result)
+        
+        # Step 4: Editor (manual call)
+        print("\n4. Calling editor agent manually...")
+        editor_data = {
+            "topic": topic,
+            "research": research_result,
+            "fact_check": fact_check_result,
+            "summary": summary_result,
+        }
+        final_report = manual_editor_agent(editor_data)
+        
+        print("\n" + "="*60)
+        print("FINAL MANUAL REPORT")
+        print("="*60)
+        print(final_report)
+        
+        print(f"\nManual workflow completed")
+        print(f"   Topic: {topic}")
+        print(f"   Report: {len(final_report)} characters")
+        print(f"   Execution: Manual step-by-step calls")
+        
+        print(f"\nWhat this manual approach shows:")
+        print(f"   - No automatic agent chaining")
+        print(f"   - No resource lock protection")
+        print(f"   - No event-driven coordination")
+        print(f"   - Manual orchestration required")
+        print(f"   - Vulnerable to API conflicts if run in parallel")
+        
+    except Exception as e:
+        print(f"\nManual workflow failed: {e}")
+        print("No automatic error handling or recovery")
+
+
+if __name__ == "__main__":
+    try:
+        topic = "The impact of AI agents on software development"
+        run_manual_workflow(topic)
+        
+    except KeyboardInterrupt:
+        print("\nManual demo interrupted by user")
+    except Exception as e:
+        print(f"\nManual demo failed: {e}")
