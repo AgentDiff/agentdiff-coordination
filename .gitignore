@@ -6,6 +6,11 @@ dist/
 wheels/
 *.egg-info
 
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
 # Virtual environments
 .venv
 
@@ -13,6 +18,7 @@ wheels/
 .env
 .env.local
 .env.*.local
+.pypirc
 
 
 # Notes

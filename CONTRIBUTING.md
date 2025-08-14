@@ -11,7 +11,7 @@ pytest  # Make sure everything works
 
 ## Areas for Contribution
 
-### 🔥 **TOP PRIORITY: Framework Integration Testing**
+### **TOP PRIORITY: Framework Integration Testing**
 
 **We need your help testing AgentDiff Coordination with popular AI frameworks!**
 

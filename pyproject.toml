@@ -1,7 +1,7 @@
 [project]
 name = "agentdiff-coordination"
 version = "0.1.0"
-description = "Lightweight coordination primitives for AI agents - prevent race conditions and concurrency bugs"
+description = "Lightweight coordination library for AI agents to prevent concurrency issues"
 readme = "README.md"
 authors = [
     { name = "AgentDiff Team", email = "hello@agentdiff.com" }
@@ -11,7 +11,7 @@ dependencies = [
     "wrapt>=1.16.0",
 ]
 license = "MIT"
-keywords = ["ai", "agents", "coordination", "concurrency", "race-conditions", "langchain", "crewai", "langgraph"]
+keywords = ["ai", "agents", "coordination", "concurrency", "race-conditions", "python", "agentdiff"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -37,10 +37,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/agentdiff/agentdiff-coordination"
-Repository = "https://github.com/agentdiff/agentdiff-coordination"
-Issues = "https://github.com/agentdiff/agentdiff-coordination/issues"
-Documentation = "https://github.com/agentdiff/agentdiff-coordination#readme"
+Homepage = "https://github.com/AgentDiff/agentdiff-coordination"
+Repository = "https://github.com/AgentDiff/agentdiff-coordination"
+Issues = "https://github.com/AgentDiff/agentdiff-coordination/issues"
+Documentation = "https://github.com/AgentDiff/agentdiff-coordination#readme"
 
 [build-system]
 requires = ["hatchling"]
